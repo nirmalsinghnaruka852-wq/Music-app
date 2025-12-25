@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import { 
     AsyncHandlerRecord, AutoBuildHandler, AutoBuildHandlerRecord, 
     CreateStoreContextProps, HandlerRecord, States, SyncHandlerRecord 
@@ -6,7 +6,7 @@ import {
 
 
 
-export default function createStore<S extends States, H extends SyncHandlerRecord<S>, AH extends AsyncHandlerRecord<S>>({states, handlers, asyncHandlers}: CreateStoreContextProps<S, H, AH>) {
+export default function createStore<S extends States, H extends SyncHandlerRecord<S> = {}, AH extends AsyncHandlerRecord<S> = {}>({states, handlers, asyncHandlers}: CreateStoreContextProps<S, H, AH>) {
 
     const allHandlers: HandlerRecord<S, H, AH> = Object.freeze(
         Object.fromEntries([
@@ -42,12 +42,8 @@ export default function createStore<S extends States, H extends SyncHandlerRecor
         const newSnapshot = selector(states);
         const cachedSnapshot = snapshotCache.get(selector);
 
-        if(cachedSnapshot) {
-            const hasChanged = Object.keys(newSnapshot).some(
-                key => (newSnapshot as any)[key] !== (cachedSnapshot as any)[key]
-            );
-
-            if(!hasChanged) return cachedSnapshot as T;
+        if(cachedSnapshot && shallowEqual(newSnapshot, cachedSnapshot)) {
+            return cachedSnapshot as T;
         }
             
         snapshotCache.set(selector, newSnapshot);
@@ -105,10 +101,21 @@ function cookDefaultHandlers<S extends States>(states: S, cb: () => void): AutoB
                 
                 ...(
                     Array.isArray(val) ? {
-                        push: withCallback((val) => states[key].push(val)),
-                        pop: withCallback(() => states[key].pop()),
-                        shift: withCallback(() => states[key].shift()),
-                        unshift: withCallback(() => states[key].unshift()),
+                        push: withCallback((val) => {
+                            states[key] = [...states[key], val] as S[keyof S]
+                        }),
+                        
+                        pop: withCallback(() => {
+                            states[key] = states[key].slice(0, -1)
+                        }),
+
+                        shift: withCallback(() => {
+                            states[key] = states[key].slice(1)
+                        }),
+                        
+                        unshift: withCallback((val) => {
+                            states[key] = [val, ...states[key]] as S[keyof S]
+                        }),
 
                         filter: withCallback((cb) => {
                             states[key] = states[key].filter(cb)
@@ -123,18 +130,36 @@ function cookDefaultHandlers<S extends States>(states: S, cb: () => void): AutoB
                             let temp: any = states[key];
                             const path = _path.split('.');
 
-                            for(let i=0; i<path.length - 1; i++) 
-                                temp = temp[path[i]];
+                            const fn = (obj: any, index = 0): S[keyof S] => {
+                                if (path.length === index) return val;
+                                const key = path[index];
 
-                            temp[path[path.length - 1]] = val;
+                                return {
+                                    ...obj,
+                                    [key]: fn(obj?.[key] ?? {}, index + 1)
+                                };
+                            }
+
+                            states[key] = fn(states[key]);
                         }),
 
                         updateMany: withCallback((val) => {
-                            for(let secKey in val) {
-                                if(Object.hasOwn(states[key], secKey)) {
-                                    states[key][secKey] = val[secKey]
+                            const fn = (target: any, source: any) => {
+                                if (typeof source !== "object" || source === null) return source;
+                                if (Array.isArray(source)) return source;
+
+                                const result = { ...target };
+
+                                for (const key in source) {
+                                    if (Object.prototype.hasOwnProperty.call(target, key)) {
+                                        result[key] = fn(target[key], source[key]);
+                                    }
                                 }
+
+                                return result;
                             }
+
+                            states[key] = fn(states[key], val);
                         })
                     } : {}
                 )
@@ -143,4 +168,25 @@ function cookDefaultHandlers<S extends States>(states: S, cb: () => void): AutoB
             return [key, handlers]
         })
     ) as unknown as AutoBuildHandlerRecord<S>
+}
+
+
+function shallowEqual(a: any, b: any) {
+    if(a === b) return true;
+    
+    if(typeof a !== 'object' || typeof b !== 'object') return false;
+
+    if(Array.isArray(a) !== Array.isArray(b)) return false;
+
+    const key1 = Object.keys(a);
+    const key2 = Object.keys(b);
+
+    if(key1.length !== key2.length) return false;
+
+    for(let key of key1) {
+        if (!Object.prototype.hasOwnProperty.call(b, key)) return false;
+        if (!Object.is(a[key], b[key])) return false;
+    }
+
+    return true;
 }

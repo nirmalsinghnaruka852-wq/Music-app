@@ -28,13 +28,13 @@ export type AutoBuildHandler<V> = {
     set: (cb: Action<V>) => void,
     reset: () => void
 } & (
-    V extends Array<V> ? {
-        push: (val: V) => void,
-        pop: () => V | null,
-        shift: () => V | null,
-        unshift: (val: V) => void,
-        filter: (cb: (item: V) => boolean) => void,
-        map: (cb: (item: V) => boolean) => void
+    V extends Array<infer T> ? {
+        push: (val: T) => void,
+        pop: () => T | null,
+        shift: () => T | null,
+        unshift: (val: T) => void,
+        filter: (cb: (item: T) => boolean) => void,
+        map: (cb: (item: T) => T) => void
     } : V extends States ? {
         update: (key: OBJECT_KEYS<V>, val: OBJECT_VALUE<V, OBJECT_KEYS<V>>) => void,
         updateMany: (val: Partial<V>) => void
