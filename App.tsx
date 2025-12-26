@@ -5,13 +5,28 @@ import ThemeText from './src/Providers/ThemeProvider/Components/ThemeText';
 import ThemeView from './src/Providers/ThemeProvider/Components/ThemeView';
 import createStore from './src/Store/Utils/createStore';
 
-const {useStore, useHandlers} = createStore<{count: number, arr: Array<number>, obj: {key1: number, key2: number}}>({
+const {useStore, useHandlers} = createStore({
   states: {
     count: 0,
-    arr: [],
+    arr: [] as number[],
     obj: {
       key1: 0,
       key2: 0
+    }
+  },
+  syncHandlers: {
+    s: (states, t: number) => {
+      states.count += 1;
+    }
+  },
+  asyncHandlers: {
+    a: (states) => {
+      return new Promise(res=> {
+        setTimeout(() => {
+          res()   
+          states.count += 1
+        }, 2000)
+      })
     }
   }
 })
@@ -46,15 +61,15 @@ function ToggleTheme() {
 
 function Test() {
   const {count, key1} = useStore((state) => ({count: state.count, key1: state.obj.key1}));
-  const {count: countHandler} = useHandlers()
+  const {s, a} = useHandlers()
   console.log('test')
   return (
     <>
       <ThemeText>{count}, {key1}</ThemeText>
       <View className='flex-row gap-2' >
-        <Button title='+' onPress={() => countHandler.set(count + 1)}/>
-        <Button title='-' onPress={() => countHandler.set(pre => pre - 1)}/>
-        <Button title='reset' onPress={() => countHandler.reset()}/>
+        <Button title='+' onPress={() => s(23)}/>
+        <Button title='-' onPress={() => a()}/>
+        {/* <Button title='reset' onPress={() => countHandler.reset()}/> */}
       </View>
     </>
   )

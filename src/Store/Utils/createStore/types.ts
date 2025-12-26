@@ -5,20 +5,27 @@ import { OBJECT_KEYS, OBJECT_VALUE } from "../../../Types/object.type";
 export type States = Record<string, any>;
 export type Action<T> = T | ((val: T) => T);
 
+export type SyncHandler<S> = (state: S, action?: any) => void;
+export type AsyncHandler<S> = (state: S, action?: any) => Promise<void>;
 
 
-export type SyncHandlerRecord<S, A=any> = Record<string, (state: S, action: A) => void>;
-export type AsyncHandlerRecord<S, A=any> = Record<string, (state: S, action: A) => Promise<void>>;
+export type SyncHandlerRecord<S, SH extends Record<string, SyncHandler<S>> = Record<string, SyncHandler<S>>> = {
+    [K in keyof SH]: (state: S, action?: ExtractActionType<SH[K]>) => void
+};
+
+export type AsyncHandlerRecord<S, AH extends Record<string, AsyncHandler<S>> = Record<string, AsyncHandler<S>>> = {
+    [K in keyof AH]: (state: S, action?: ExtractActionType<AH[K]>) => Promise<void>
+};
 
 
 
 export type CreateStoreContextProps<
-    S extends States, 
-    H extends SyncHandlerRecord<S>, 
-    AH extends AsyncHandlerRecord<S>
+    S extends States,
+    SH extends Record<string, SyncHandler<S>> = Record<string, SyncHandler<S>>,
+    AH extends Record<string, AsyncHandler<S>> = Record<string, AsyncHandler<S>>
 > = {
     states: S,
-    handlers?: H,
+    syncHandlers?: SH,
     asyncHandlers?: AH
 }
 
@@ -49,10 +56,22 @@ export type AutoBuildHandlerRecord<S extends States> = {
 
 
 
-type ExtractActionType<T> = T extends (state: any, action: infer A) => any ? A : never;
+export type ExtractActionType<T> = T extends (state: States, action: infer A) => void ? A : never;
 
-export type HandlerRecord<S extends States, H extends SyncHandlerRecord<S>, AH extends AsyncHandlerRecord<S>> = AutoBuildHandlerRecord<S> & {
-    [K in keyof H]: (action: ExtractActionType<H[K]>) => void
+type ReturnHandlers<S, V, R> = (
+    V extends (state: S) => R ? (
+        () => R 
+    ) : V extends (state: S, action: infer A) => R ? (
+        (action: A) => R
+    ) : never
+)
+
+export type HandlerRecord<
+    S extends States,
+    SH extends Record<string, SyncHandler<S>> = Record<string, SyncHandler<S>>,
+    AH extends Record<string, AsyncHandler<S>> = Record<string, AsyncHandler<S>>
+> = AutoBuildHandlerRecord<S> & {
+    [K in keyof SH]: ReturnHandlers<S, SH[K], void>
 } & {
-    [K in keyof AH]: (action: ExtractActionType<AH[K]>) => Promise<void>
+    [K in keyof AH]: ReturnHandlers<S, AH[K], Promise<void>>
 }
