@@ -3,9 +3,9 @@ import { Button, View } from 'react-native';
 import ThemeProvider, { useTheme } from './src/Providers/ThemeProvider';
 import ThemeText from './src/Providers/ThemeProvider/Components/ThemeText';
 import ThemeView from './src/Providers/ThemeProvider/Components/ThemeView';
-import createStore from './src/Store/Utils/createStore';
+import createStoreProvider from './src/Store/Utils/createStoreProvider';
 
-const {useStore, useHandlers} = createStore({
+const {useStore, useHandlers, Provider} = createStoreProvider({
   states: {
     count: 0,
     arr: [] as number[],
@@ -21,9 +21,9 @@ const {useStore, useHandlers} = createStore({
   },
   asyncHandlers: {
     a: (states) => {
-      return new Promise(res=> {
+      return new Promise<boolean>(res=> {
         setTimeout(() => {
-          res()   
+          res(true)   
           states.count += 1
         }, 2000)
       })
@@ -35,12 +35,14 @@ export default function App() {
   return (
     <ThemeProvider>
       <ThemeView useWindBackground className="flex-1 items-center justify-center bg-red-100">
-        <ThemeView color='primary'  className='w-full h-4' />
-        <Test/>
-        <ThemeView color='secondary'  className='w-full h-4' />
-        <Test1/>
+        <Provider>
+          <ThemeView color='primary'  className='w-full h-4' />
+          <Test/>
+          <ThemeView color='secondary'  className='w-full h-4' />
+          <Test1/>
+        </Provider>
         <ThemeView color='error'  className='w-full h-4' />
-        <Test2/>
+        {/* <Test2/> */}
         <ThemeView color='info'  className='w-full h-4' />
         <ThemeView color='warning'  className='w-full h-4' />
       </ThemeView>
