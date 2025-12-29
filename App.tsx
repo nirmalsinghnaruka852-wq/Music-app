@@ -3,7 +3,6 @@ import './global.css';
 import ThemeProvider, { useTheme } from './src/Providers/ThemeProvider';
 import ThemeText from './src/Providers/ThemeProvider/Components/ThemeText';
 import ThemeView from './src/Providers/ThemeProvider/Components/ThemeView';
-import RippleContainer from './src/Components/Core/RippleContinar';
 
 export default function App() {
   return (
@@ -25,11 +24,7 @@ export default function App() {
         <ThemeText color='warning' fontSize={8 * 2} className="text-4xl">
           Warning Text
         </ThemeText>
-        <RippleContainer >
-            <ThemeText color='warning' fontSize={8 * 2} className="text-4xl">
-          click MEsdfgsdfgsdfgsdsadfsdafsdffdsfg
-          </ThemeText>
-        </RippleContainer>
+        
         <ThemeView color='primary'  className='w-full h-4' />
         <ThemeView color='secondary'  className='w-full h-4' />
         <ThemeView color='error'  className='w-full h-4' />
