@@ -24,7 +24,7 @@ export default function App() {
         <ThemeText color='warning' fontSize={8 * 2} className="text-4xl">
           Warning Text
         </ThemeText>
-
+        
         <ThemeView color='primary'  className='w-full h-4' />
         <ThemeView color='secondary'  className='w-full h-4' />
         <ThemeView color='error'  className='w-full h-4' />
