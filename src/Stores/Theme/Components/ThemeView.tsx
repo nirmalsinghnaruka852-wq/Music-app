@@ -19,7 +19,7 @@ export default function ThemeView({style, color = 'primary', backgroundColor, us
 
     return (
         <View {...props} 
-            style={[style, useWindBackground === false ? {backgroundColor} : {}]}
+            style={[style, useWindBackground === false ? {backgroundColor} : null]}
         />
     )
 }

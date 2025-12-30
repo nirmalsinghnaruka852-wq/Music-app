@@ -20,7 +20,7 @@ export default function ThemeText({style, color: _color = 'primary', fontSize: _
             style={[
                 style, 
                 {color}, 
-                [fontSize ? {fontSize} : {}]
+                fontSize ? {fontSize} : null
             ]}
         />
     )
