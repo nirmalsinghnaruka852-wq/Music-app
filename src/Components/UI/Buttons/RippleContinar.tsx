@@ -1,5 +1,4 @@
-import { Animated, GestureResponderEvent, LayoutChangeEvent, Pressable, ViewProps } from "react-native";
-import { useAnimatedValues } from "../../../Hook/useAnimatedValues";
+import { Animated, GestureResponderEvent, LayoutChangeEvent, Pressable, useAnimatedValue, ViewProps } from "react-native";
 import { ReactNode, useRef, useState } from "react";
 
 
@@ -7,14 +6,17 @@ type RippleContainerProps=ViewProps&{
   children : ReactNode,
   rippleOpacity :number, 
   rippleColor:string
+   variant: string,
+   duration :number 
+
 } 
 
 
-function RippleContainer({ children, rippleColor = 'rgba(0,0,0,0.2)', rippleOpacity = 0.5 ,...props }: RippleContainerProps) {
+function RippleContainer({ children, rippleColor , rippleOpacity ,...props }: RippleContainerProps) {
     
     const [position, setPosition] = useState<Record<'X' | 'Y', number>>({X: 0,Y: 0,});
-    const opacity = useAnimatedValues(0);
-    const scale = useAnimatedValues(0);
+    const opacity = useAnimatedValue(0);
+    const scale = useAnimatedValue(0);
     const [layout, setLayout] = useState({ width: 0, height: 0 });
 
       const onLayout = (e: LayoutChangeEvent) => {
@@ -44,7 +46,6 @@ function RippleContainer({ children, rippleColor = 'rgba(0,0,0,0.2)', rippleOpac
   return (
     <Pressable onPress={Handler} onLayout={onLayout} style={{ overflow: 'hidden', position: 'relative' }}>
       <Animated.View
-        {...props}
         style={{
           position: 'absolute',
           top: position.Y - layout.width / 2,
