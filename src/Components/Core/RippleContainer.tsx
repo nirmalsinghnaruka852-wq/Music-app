@@ -5,8 +5,7 @@ import { ColorVariant } from "../../Stores/Theme/types";
 
 
 export type RippleContainerProps = PressableProps & {
-  children: ReactNode,
-
+  children?: ReactNode,
   color?: ColorVariant
   style?: ViewStyle
   rippleOpacity?:number, 

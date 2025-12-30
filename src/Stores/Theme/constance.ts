@@ -1,25 +1,6 @@
 import { ARRAY } from "../../Types/array.type";
 import { RANGE } from "../../Types/number.type";
-import { ColorEntities, ColorVariant, FontSize, Theme } from "./types";
-
-
-export const _fontSize: Record<FontSize, number> = ['xs', 'sm', 'mg', 'lg', 'xl'].reduce((acc, size, index) => {
-    
-    type Size = "xs" | "sm" | "md" | "lg" | "xl";
-    type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
-
-    acc[size as Size] = 8 * (index + 1);
-
-    for(let i of [1, 2, 3, 4, 5, 6, 7]) {
-        const key: FontSize = `${size as Size}-${i as Step}`
-        acc[key] = (8 * (index + 1) + i);
-    }
-
-    return acc;
-
-}, {} as Record<FontSize, number>)
-
-
+import { ColorEntities, ColorVariant, Theme } from "./types";
 
 const getColors = <RGB extends ARRAY<RANGE<0, 255>, 3>>(text: RGB, bg: RGB): ColorEntities => ({
     text: `rgb(${text.join(',')})`,
@@ -42,7 +23,7 @@ export const _colors: Record<Theme, Record<ColorVariant, ColorEntities>> = {
     },
 
     dark: {
-        primary: getColors([100,100,100], [150,150,150]),
+        primary: getColors([250,250,250], [50,50,50]),
         
         secondary: getColors([0,0,0], [255,255,255]),
         

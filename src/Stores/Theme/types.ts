@@ -14,6 +14,3 @@ export type ColorEntities = {
 
 
 export type ColorVariant = 'primary' | 'secondary' | 'error' | 'info' | 'warning';
-
-
-export type FontSize = `${'xs' | 'sm' | 'md' | 'lg' | 'xl'}${`-${1 | 2 | 3 | 4 | 5 | 6 | 7}` | ''}`;

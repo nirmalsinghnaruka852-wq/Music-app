@@ -3,13 +3,13 @@ import { useThemeStore } from "..";
 import { ColorVariant } from "../types";
 
 
-type ThemeTextProps = ViewProps & {
+export type ThemeViewProps = ViewProps & {
     color?: ColorVariant,
     backgroundColor?: string,
     useWindBackground?: boolean
 }
 
-export default function ThemeView({style, color = 'primary', backgroundColor, useWindBackground=false, ...props}: ThemeTextProps): React.JSX.Element {
+export default function ThemeView({style, color = 'primary', backgroundColor, useWindBackground=false, ...props}: ThemeViewProps): React.JSX.Element {
 
     const {_backgroundColor} = useThemeStore(states => ({
         _backgroundColor: states.colors[color].bg
