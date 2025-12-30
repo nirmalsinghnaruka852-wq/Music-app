@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
-import { useTheme } from "../../Providers/ThemeProvider";
+import { useThemeStore } from "../../Stores/Theme";
 import { Animated, GestureResponderEvent, Pressable, PressableProps, useAnimatedValue, View, ViewStyle } from "react-native";
-import { ColorVariant } from "../../Providers/ThemeProvider/types";
+import { ColorVariant } from "../../Stores/Theme/types";
 
 
 export type RippleContainerProps = PressableProps & {
@@ -19,7 +19,7 @@ export type RippleContainerProps = PressableProps & {
 
 export default function RippleContainer({children, style, onPress, color='primary', rippleColor, rippleOpacity=0.5, rippleScale=1, duration=300, rippleCount=3, ...props}: RippleContainerProps) {
   
-  const rgb = useTheme(s => s.colors[color].rgb.text.join(','));
+  const rgb = useThemeStore(s => s.colors[color].rgb.text.join(','));
   rippleColor ??= `rgb(${rgb})`;
     
   const [position, setPosition] = useState<{top: number, left: number}>({top: 0, left: 0});

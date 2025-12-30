@@ -1,9 +1,9 @@
 import { ARRAY } from "../../Types/array.type";
 import { RANGE } from "../../Types/number.type";
-import { FontSize, Theme, ThemeProviderStates } from "./types";
+import { ColorEntities, ColorVariant, FontSize, Theme } from "./types";
 
 
-export const _fontSize: ThemeProviderStates['fontSize'] = ['xs', 'sm', 'mg', 'lg', 'xl'].reduce((acc, size, index) => {
+export const _fontSize: Record<FontSize, number> = ['xs', 'sm', 'mg', 'lg', 'xl'].reduce((acc, size, index) => {
     
     type Size = "xs" | "sm" | "md" | "lg" | "xl";
     type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -17,18 +17,18 @@ export const _fontSize: ThemeProviderStates['fontSize'] = ['xs', 'sm', 'mg', 'lg
 
     return acc;
 
-}, {} as ThemeProviderStates['fontSize'])
+}, {} as Record<FontSize, number>)
 
 
 
-const getColors = <RGB extends ARRAY<RANGE<0, 255>, 3>>(text: RGB, bg: RGB) => ({
+const getColors = <RGB extends ARRAY<RANGE<0, 255>, 3>>(text: RGB, bg: RGB): ColorEntities => ({
     text: `rgb(${text.join(',')})`,
     bg: `rgb(${bg.join(',')})`,
     rgb: {text, bg}
 })
 
 
-export const _colors: Omit<Record<Theme, ThemeProviderStates['colors']>, 'system'> = {
+export const _colors: Record<Theme, Record<ColorVariant, ColorEntities>> = {
     light: {
         primary: getColors([0,0,0], [255,255,255]),
 
