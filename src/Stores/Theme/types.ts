@@ -14,3 +14,4 @@ export type ColorEntities = {
 
 
 export type ColorVariant = 'primary' | 'secondary' | 'error' | 'info' | 'warning';
+export type Variant = 'solid'|'soft'| 'soft-outlined'|'text'| 'outlined'
