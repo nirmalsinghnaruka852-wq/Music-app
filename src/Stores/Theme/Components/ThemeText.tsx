@@ -1,15 +1,16 @@
 import { Text, TextProps } from "react-native";
 import { useThemeStore } from "..";
-import { ColorVariant } from "../types";
+import { ColorStates } from "../types";
 
 
 export type ThemeTextProps = TextProps & {
-    color?: ColorVariant,
+    color?: ColorStates,
+    textColor?: string
 }
 
-export default function ThemeText({style, color: _color = 'primary', ...props}: ThemeTextProps): React.JSX.Element {
+export default function ThemeText({style, color: _color = 'text', textColor, ...props}: ThemeTextProps): React.JSX.Element {
 
-    const color = useThemeStore(states => states.colors[_color].text);
+    const color = useThemeStore(states => textColor ?? states.colors[_color]);
 
     return (
         <Text {...props} 

@@ -1,18 +1,18 @@
 import { View, ViewProps } from "react-native";
 import { useThemeStore } from "..";
-import { ColorVariant } from "../types";
+import { ColorStates } from "../types";
 
 
 export type ThemeViewProps = ViewProps & {
-    color?: ColorVariant,
+    color?: ColorStates,
     backgroundColor?: string,
     useWindBackground?: boolean
 }
 
-export default function ThemeView({style, color = 'primary', backgroundColor, useWindBackground=false, ...props}: ThemeViewProps): React.JSX.Element {
+export default function ThemeView({style, color = 'bg', backgroundColor, useWindBackground=false, ...props}: ThemeViewProps): React.JSX.Element {
 
     const {_backgroundColor} = useThemeStore(states => ({
-        _backgroundColor: states.colors[color].bg
+        _backgroundColor: states.colors[color]
     }));
 
     if(!backgroundColor) backgroundColor = _backgroundColor;
