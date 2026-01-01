@@ -1,8 +1,9 @@
-import { Dispatch, ReactNode, SetStateAction, useEffect, useRef } from "react";
-import { Animated, Modal, ModalProps, PanResponder, useAnimatedValue, useWindowDimensions, View } from "react-native";
+import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react";
+import { Animated, Modal, ModalProps, PanResponder, useAnimatedValue, useWindowDimensions } from "react-native";
 import RippleContainer from "../RippleContainer";
 import ThemeView, { ThemeViewProps } from "../../../Stores/Theme/Components/ThemeView";
 import { useThemeStore } from "../../../Stores/Theme";
+import { ColorStates } from "../../../Stores/Theme/types";
 
 
 
@@ -12,15 +13,17 @@ export type CenterModalProps = Omit<ModalProps, 'animationType'> & {
     setVisible: Dispatch<SetStateAction<boolean>>,
     preventBack?: boolean,
     containerProps?: ThemeViewProps,
-    backdropColor?: string
+    backdropColor?: ColorStates
 }
 
 
-export default function CenterModal({children, visible, setVisible, preventBack, onRequestClose, style, containerProps, backdropColor, ...props}: CenterModalProps) {
+export default function CenterModal({children, visible, setVisible, preventBack, onRequestClose, style, containerProps, backdropColor: backdropVariant='text', ...props}: CenterModalProps) {
 
-    backdropColor ??= useThemeStore(states => `rgba(${states.colors.secondary.rgb.bg.join(',')}, 0.2)`);
+    const backdropColor = useThemeStore(states => states.colors[backdropVariant].replace(')', ', 0.8)'));
 
     const {width: windowWidth, height: windowHeight} = useWindowDimensions();
+
+    const [show, setShow] = useState(visible);
     
     const animatedValue = useAnimatedValue(0);
 
@@ -46,10 +49,8 @@ export default function CenterModal({children, visible, setVisible, preventBack,
             
             const isMovingFast = [Math.abs(vx) > 2, Math.abs(vy) > 2].some(Boolean);
 
-            console.log({isMovingFast, isNearEdge})
             if(isNearEdge || isMovingFast) {
-                handleDismiss()
-                return;
+                return setVisible(false);
             }
 
             Animated.spring(translate, {
@@ -61,46 +62,50 @@ export default function CenterModal({children, visible, setVisible, preventBack,
 
     })).current;
 
+    function handleClose() {
+        setTimeout(() => setShow(false), 150)
 
-    function handleDismiss(cb: () => void = () => setVisible(false)) {
         Animated.spring(animatedValue, {
             toValue: 0,
             bounciness: 12,
             useNativeDriver: true
-        }).start(cb)
+        }).start()
     }
 
-
-    useEffect(() => {
-        if(!visible) return;
-        
-        translate.setValue({x: 0, y: 0});
-        
-        Animated.spring(animatedValue, {
-            toValue: 1,
-            bounciness: 12,
-            useNativeDriver: true
-        }).start()
+    useEffect(() => {        
+        if(visible){
+            setShow(true);
+            translate.setValue({x: 0, y: 0});
+            
+            Animated.spring(animatedValue, {
+                toValue: 1,
+                bounciness: 12,
+                useNativeDriver: true
+            }).start()
+        } else {
+            handleClose();
+        }
     }, [visible])
-    
+
     
     return (
         <Modal {...props} 
-            visible={visible}
-            animationType="fade"
-            backdropColor={backdropColor}    
+            visible={show}
+            transparent
 
             onRequestClose={(event) => {
                 if(preventBack) return;
-
-                handleDismiss(() => {
-                    setVisible(false);
-                    onRequestClose?.(event);
-                })
+                setVisible(false);
+                onRequestClose?.(event);
             }}
         >
-            <View className="flex-1 w-full h-full items-center justify-center" >
-                <RippleContainer className="flex-1 w-full" onPressOut={() => handleDismiss()} rippleOpacity={0.2} />
+            <Animated.View className="flex-1 w-full h-full items-center justify-center" 
+                style={{
+                    opacity: animatedValue,
+                    backgroundColor: backdropColor
+                }}
+            >
+                <RippleContainer className="flex-1 w-full" onPressOut={() => setVisible(false)} rippleOpacity={0.2} />
                 
                 <Animated.View {...panHandlers}
                     className={'w-full p-2 relative'}
@@ -120,8 +125,8 @@ export default function CenterModal({children, visible, setVisible, preventBack,
                     </ThemeView>
                 </Animated.View>
                 
-                <RippleContainer className="flex-1 w-full" onPressOut={() => handleDismiss()} rippleOpacity={0.2} />
-            </View>
+                <RippleContainer className="flex-1 w-full" onPressOut={() => setVisible(false)} rippleOpacity={0.2} />
+            </Animated.View>
         </Modal>
     )
 }
