@@ -4,5 +4,9 @@ export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 // add more according to need;
 export type ButtonLayout = {
-    height: number
+    height: number,
+    borderRadius: number,
+    paddingInline: number,
+    fontSize: number,
+    borderWidth: number
 }

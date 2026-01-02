@@ -24,35 +24,30 @@ export function getButtonStyle(variant: ButtonVariants, color: ColorStates) {
             color: textColor,
             backgroundColor: bgColor,
             borderColor: bgColor,
-            borderWidth: 1
         },
 
         'outlined': {
             color: bgColor,
             backgroundColor: 'transparent',
             borderColor: bgColor,
-            borderWidth: 1
         },
 
         'soft': {
             color: bgColor,
             backgroundColor: bgColor.replace(')', ', 0.2)'),
-            borderColor: 'transparent',
-            borderWidth: 0
+            borderColor: bgColor.replace(')', ', 0.2)'),
         },
 
         'soft-outlined': {
             color: bgColor,
             backgroundColor: bgColor.replace(')', ', 0.2)'),
-            borderColor: bgColor,
-            borderWidth: 1
+            borderColor: bgColor
         },
 
         'text': {
             color: bgColor,
             backgroundColor: 'transparent',
             borderColor: 'transparent',
-            borderWidth: 0
         }
     }[variant]), [bgColor, textColor]);
 

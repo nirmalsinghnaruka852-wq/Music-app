@@ -4,10 +4,10 @@ import { useThemeStore } from "../../Stores/Theme";
 import { ColorStates } from '../../Stores/Theme/types';
 
 
-export type IconNames = keyof typeof icons;
+export type IconName = keyof typeof icons;
 
 export type IconProps = LucideProps & {
-  name: IconNames,
+  name: IconName,
   
   size?: number,
   color?: ColorStates,
