@@ -14,7 +14,7 @@ export default function ThemeText({style, color: _color = 'text', textColor, ...
 
     return (
         <Text {...props} 
-            style={[style, {color}]}
+           style={[style, {color}]}
         />
     )
 }
