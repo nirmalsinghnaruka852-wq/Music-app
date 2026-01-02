@@ -18,7 +18,7 @@ type ButtonProp = RippleContainerProps & {
 };
 
 
-export default function Button({ title, startIcon, endIcon, variant = 'solid', color = 'primary', size = 'md', rounded, ...props}: ButtonProp) {
+export default function Button({ title, startIcon, endIcon, variant = 'solid', color = 'primary', size = 'md', rounded, style, ...props}: ButtonProp) {
   
   const { color: textColor, borderColor, backgroundColor } = getButtonStyle(variant, color);
 
@@ -31,7 +31,7 @@ export default function Button({ title, startIcon, endIcon, variant = 'solid', c
     <RippleContainer
       {...props}
       rippleColor={textColor}
-      style={{ ...containerStyle, backgroundColor, borderColor, flexDirection: 'row', gap: Math.floor(fontSize / 2), alignItems: 'center', justifyContent: 'center' }}
+      style={{ ...style, ...containerStyle, backgroundColor, borderColor, flexDirection: 'row', gap: Math.floor(fontSize / 2), alignItems: 'center', justifyContent: 'center' }}
     >
       <ShowWhen when={!!startIcon}>
         <Icon name={startIcon as IconName} customColor={textColor} />
