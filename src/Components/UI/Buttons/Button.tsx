@@ -1,59 +1,47 @@
-import * as icons from 'lucide-react-native/icons';
 import RippleContainer, { RippleContainerProps } from '../../Core/RippleContainer';
-import Icon from '../../Core/Icon';
-import { GestureResponderEvent, Text, View } from 'react-native';
+import Icon, { IconName } from '../../Core/Icon';
 import { ButtonSize, ButtonVariants } from './Utils/types';
-import { ColorStates } from '../../../Stores/Theme/types';
 import { RANGE } from '../../../Types/number.type';
 import { getButtonStyle } from './Utils/functions';
 import { BUTTON_LAYOUT } from './Utils/constance';
 import ThemeText from '../../../Stores/Theme/Components/ThemeText';
-import If from '../../Core/If';
+import ShowWhen from '../../Core/ShowWhen';
 
 type ButtonProp = RippleContainerProps & {
   title: string;
-  IconName?: keyof typeof icons;
-  endIcon?: keyof typeof icons;
+
+  startIcon?: IconName;
+  endIcon?: IconName;
   variant?: ButtonVariants;
-  color?: ColorStates;
-  size?: number | ButtonSize;
+  size?: ButtonSize;
   rounded?: number | `${RANGE<0, 100>}%`;
-  onPress?: (event: GestureResponderEvent) => void;
 };
 
-export default function Button({
-  title,
-  IconName,
-  endIcon,
-  onPress,
-  variant = 'solid',
-  color = 'primary',
-  size = 'md',
-  rounded = '10%',
-  ...props
-}: ButtonProp) {
-  const { color: textColor, ...style } = getButtonStyle(variant, color);
-  const height = typeof size === 'number' ? size : BUTTON_LAYOUT[size].height;
 
-  const handleButton = (event: GestureResponderEvent) => {
-    onPress?.(event);
+export default function Button({ title, startIcon, endIcon, variant = 'solid', color = 'primary', size = 'md', rounded, ...props}: ButtonProp) {
+  
+  const { color: textColor, borderColor, backgroundColor } = getButtonStyle(variant, color);
+
+  const {fontSize, ...containerStyle} = {
+    ...BUTTON_LAYOUT[size], 
+    ...rounded !== undefined ? {borderRadius: rounded} : {}
   };
 
   return (
     <RippleContainer
       {...props}
       rippleColor={textColor}
-      style={{ ...style, height, borderRadius: rounded }}
-      className="flex-1 items-center justify-center"
-      onPress={handleButton}
+      style={{ ...containerStyle, backgroundColor, borderColor, flexDirection: 'row', gap: Math.floor(fontSize / 2), alignItems: 'center', justifyContent: 'center' }}
     >
-      <If condition={!!IconName}>
-         <Icon name={IconName!} customColor={textColor} />
-      </If>
-      <ThemeText textColor={textColor}></ThemeText>
-      <If condition={!!endIcon} >
-        <Icon name={endIcon!} customColor={textColor} />
-      </If>
+      <ShowWhen when={!!startIcon}>
+        <Icon name={startIcon as IconName} customColor={textColor} />
+      </ShowWhen>
+
+      <ThemeText textColor={textColor} style={{fontSize}} >{title}</ThemeText>
+      
+      <ShowWhen when={!!endIcon} >
+        <Icon name={endIcon as IconName} customColor={textColor} />
+      </ShowWhen>
     </RippleContainer>
   );
 }
