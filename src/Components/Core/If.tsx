@@ -1,11 +1,12 @@
-import { ReactNode } from 'react';
+import { ReactElement } from "react"
 
 type IfProps = {
-  condition: boolean;
-  children: ReactNode;
-};
+  condition: boolean
+  children: ReactElement
+}
 
 function If({ condition, children }: IfProps) {
-  return  condition && <>{children}</>;
+  return condition ? children: null
 }
-export default If;
+
+export default If
