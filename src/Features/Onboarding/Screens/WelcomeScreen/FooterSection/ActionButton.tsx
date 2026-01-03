@@ -61,8 +61,8 @@ export default function ActionButton() {
                             opacity: pageAnimatedValue,
 
                             transform: [{translateX: pageAnimatedValue.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: [MAX_W, 0]
+                                inputRange: [0, 1, 2],
+                                outputRange: [MAX_W, 0, 0]
                             })}]
                         }}
                     >

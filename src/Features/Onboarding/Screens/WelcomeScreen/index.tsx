@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import FooterSection from "./FooterSection";
 import { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
 import MainSection from "./MainSection";
+import GestureContainer from "./GestureContainer";
 
 
 const Context = createContext<{
@@ -30,7 +31,7 @@ export default function WelcomeScreen() {
 
         Animated.spring(pageAnimatedValue, {
             toValue: page,
-            bounciness: 8,
+            bounciness: 12,
             useNativeDriver: false
         }).start();
 
@@ -47,11 +48,13 @@ export default function WelcomeScreen() {
     return (
         <Context.Provider value={states}>    
             <ThemeView className="relative w-full h-full">
-                <MainSection/>
+                <GestureContainer>
+                    <MainSection/>
+                </GestureContainer>
 
                 <View 
                     style={{paddingBottom}} 
-                    className="absolute left-0 bottom-4 w-full items-center justify-between gap-2 px-3 box-border" 
+                    className="absolute left-0 bottom-10 w-full items-center justify-between gap-2 px-3 box-border" 
                 >
                     <FooterSection/>
                 </View>

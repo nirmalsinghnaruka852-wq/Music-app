@@ -16,47 +16,25 @@ export default function MainSection() {
 
     return (
         <View className="w-full h-full relative" >
-            <View className="w-full h-full items-center justify-center" >
-                <Screen1/>
-            </View>
-
-
             <Animated.View 
-                className="w-full h-full items-center justify-center absolute" 
-                
+                className="w-full h-full items-center justify-center" 
                 style={{
-                    transform: [
-                        {translateX: pageAnimatedValue.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: ['100%', '0%']
-                        })},
+                    opacity: pageAnimatedValue.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 0]
+                    }),
 
-                        {translateY: pageAnimatedValue.interpolate({
-                            inputRange: [0, 1],  
-                            outputRange: ['60%', '0%']
-                        })}
-                    ],
-
-                    opacity: pageAnimatedValue,
+                    transform: [{scale: pageAnimatedValue.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 0.6]
+                    })}]
                 }}
             >
-                <Animated.View className="absolute rounded-full aspect-square" 
-                    style={{
-                        backgroundColor: primaryColor,
-
-                        width: Math.max(WINDOW_WIDTH, WINDOW_HEIGHT) + 400,
-
-                        transform: [{scale: pageAnimatedValue.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [0.2, 1]
-                        })}],
-
-                        opacity: pageAnimatedValue,
-                    }} 
-                />
-
-                <Screen2/>
+                <Screen1/>
             </Animated.View>
+
+
+            <Screen2/>
         </View>
     )
 }

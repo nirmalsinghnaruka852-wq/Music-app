@@ -1,13 +1,13 @@
 import { Theme } from "./types";
-import { _colors } from "./constance";
+import { _colors, _theme } from "./constance";
 import { createStore } from "@fun-tools/store";
 
 
 
 const {useStore, useHandlers} = createStore({
     states: {
-        theme: 'light' as Theme,
-        colors: _colors['light']
+        theme: _theme,
+        colors: _colors[_theme]
     },
 
     syncHandlers: {
