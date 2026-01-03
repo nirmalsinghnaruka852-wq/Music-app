@@ -1,5 +1,6 @@
 import { Theme, ColorStates } from "./types";
 
+export const _theme: Theme = 'dark';
 
 export const _colors: Record<Theme, Record<ColorStates, string>> = {
     light: {

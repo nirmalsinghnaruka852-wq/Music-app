@@ -1,4 +1,4 @@
-import { View, ViewProps } from "react-native";
+import { Animated, ViewProps } from "react-native";
 import { useThemeStore } from "..";
 import { ColorStates } from "../types";
 
@@ -18,7 +18,7 @@ export default function ThemeView({style, color = 'bg', backgroundColor, useWind
     if(!backgroundColor) backgroundColor = _backgroundColor;
 
     return (
-        <View {...props} 
+        <Animated.View {...props} 
             style={[style, useWindBackground === false ? {backgroundColor} : null]}
         />
     )

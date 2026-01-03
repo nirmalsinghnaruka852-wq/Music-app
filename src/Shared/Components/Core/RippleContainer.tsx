@@ -2,6 +2,7 @@ import { ReactNode, useRef, useState } from "react";
 import { useThemeStore } from "../../Stores/Theme";
 import { ColorStates } from "../../Stores/Theme/types";
 import { Animated, GestureResponderEvent, Pressable, PressableProps, useAnimatedValue, View, ViewStyle } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
 export type RippleContainerProps = PressableProps & {
@@ -17,6 +18,8 @@ export type RippleContainerProps = PressableProps & {
 
 
 export default function RippleContainer({children, style, onPress, color='text', rippleColor, rippleOpacity=0.4, rippleScale=1, duration=300, rippleCount=3, ...props}: RippleContainerProps) {
+
+  const {top, left} = useSafeAreaInsets();
   
   const rgb = useThemeStore(s => s.colors[color]);
   rippleColor ??= `rgb(${rgb})`;
@@ -30,7 +33,10 @@ export default function RippleContainer({children, style, onPress, color='text',
   function handleOnPress(event: GestureResponderEvent) {
     const {pageX, pageY} = event.nativeEvent;
     
-    button.current?.measure((x, y) => {
+    button.current?.measureInWindow((x, y) => {
+      x += left; 
+      y += top;
+      
       setPosition({top: pageY - y, left: pageX - x})
     })
 
