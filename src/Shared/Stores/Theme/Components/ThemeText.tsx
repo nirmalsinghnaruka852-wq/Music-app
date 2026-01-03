@@ -1,11 +1,12 @@
-import { Text, TextProps } from "react-native";
+import { Animated, TextProps } from "react-native";
 import { useThemeStore } from "..";
 import { ColorStates } from "../types";
+import { AnimatedInterpolValue } from "@/Shared/Types/functions.type";
 
 
 export type ThemeTextProps = TextProps & {
     color?: ColorStates,
-    textColor?: string
+    textColor?: string | AnimatedInterpolValue
 }
 
 export default function ThemeText({style, color: _color = 'text', textColor, ...props}: ThemeTextProps): React.JSX.Element {
@@ -13,7 +14,7 @@ export default function ThemeText({style, color: _color = 'text', textColor, ...
     const color = useThemeStore(states => textColor ?? states.colors[_color]);
 
     return (
-        <Text {...props} 
+        <Animated.Text {...props} 
            style={[style, {color}]}
         />
     )
